@@ -1,0 +1,107 @@
+id,name,name_short,type,sex,branche,party,politician
+1,DBProjekt GmbH Stuttgart 21,Projekt GmbH S21,2,,1,,F
+2,DBProjektBau GmbH,ProjektBau GmbH,2,,1,,F
+3,DB Projekt Stuttgart-Ulm GmbH,Projekt Stuttgart-Ulm GmbH,2,,1,,F
+4,Deutsche Bahn AG,Deutsche Bahn AG,2,,1,,F
+5,Harald Klein,Harald Klein,1,1,,,F
+6,Fridas Pier GmbH,Fridas Pier GmbH,2,,6,,F
+7,"Deutsche Verkehrswissenschaftliche Gesellschaft Bezirksvereinigung Württemberg e.V., Stuttgart",DVWG Württemberg,2,,3,,F
+8,Manfred Leger,Manfred Leger,1,1,,,F
+9,Rail Power Systems GmbH,Rail Power Systems GmbH,2,,2,,F
+10,Stefan Penn,Stefan Penn,1,1,,,F
+11,Peter Sturm,Peter Sturm,1,1,,,F
+12,Olaf Drescher,Olaf Drescher,1,1,,,F
+13,Michael Pradel,Michael Pradel,1,1,,,F
+14,Frank Meyer,Frank Meyer,1,1,,,F
+15,Robert Berghorn,Robert Berghorn,1,1,,,F
+16,Günther Hoffmann,Günther Hoffmann,1,1,,,F
+17,Prof. Dr. Bernd H. Hillemeier,Bernd Hillemeier,1,1,,,F
+18,Bernhard Bauer,Bernhard Bauer,1,1,,,F
+19,Claudia Horn,Claudia Horn,1,2,,,F
+20,Heike Moll,Heike Moll,1,2,,,F
+21,Prof. Dr.-Ing. Jochen Trinckauf,Jochen Trinckauf,1,1,,,F
+22,Hochtief AG,Hochtief AG,2,,2,,F
+23,Herbert Lütkestratkötter,Herbert Lütkestratkötter,1,1,,,F
+24,Grontmij GmbH,Grontmij GmbH,2,,2,,F
+25,Sweco GmbH,Sweco GmbH,2,,2,,F
+26,David McAllister,David McAllister,1,1,,CDU,T
+27,Nicole Razavi,Nicole Razavi,1,2,,CDU,T
+28,Herrenknecht AG,Herrenknecht AG,2,,2,,F
+29,Martin Herrenknecht,Martin Herrenknecht,1,1,,CDU,F
+30,Lothar Späth,Lothar Späth,1,1,,CDU,T
+31,Günther Oettinger,Günther Oettinger,1,1,,CDU,T
+32,Gerhard Schröder,Gerhard Schröder,1,1,,SPD,T
+33,Wolff & Müller Holding GmbH,Wolff Müller GmbH,2,,2,,F
+34,Klaus Grewe,Klaus Grewe,1,1,,,F
+35,Strabag SE,Strabag SE,2,,2,,F
+36,Reformkommission Großprojekte,Reformkommission Großprojekte,2,,4,,F
+37,Ed. Züblin AG,Ed. Züblin AG,2,,2,,F
+38,Ronald Pofalla,Ronald Pofalla,1,1,,CDU,T
+39,Christlich-Demokratische Union Deutschlands,CDU,2,,4,CDU,F
+40,Michael Föll,Michael Föll,1,1,,CDU,T
+41,Heinrich Haasis,Heinrich Haasis,1,1,,CDU,T
+42,Landesbank Baden-Württemberg,LBBW,2,,7,,F
+43,Deutscher Sparkassen- & Giroverband,DSGV,2,,7,,F
+44,Sparkassenverband Baden-Württemberg,SVBW,2,,7,,F
+45,Peter Schneider,Peter Schneider,1,1,,CDU,T
+46,Oettinger Gruppe GmbH,Oettinger Gruppe GmbH,2,,7,,F
+47,Rudolf Häussler,Rudolf Häussler,1,1,,,F
+48,Rüdiger Grube,Rüdiger Grube,1,1,,,F
+49,Hartmut Mehdorn,Hartmut Mehdorn,1,1,,,F
+50,Ullrich Martin,Ullrich Martin,1,1,,,F
+51,Wissenschaftliches Institut für Verkehrswissenschaften Stuttgart,VWI Stuttgart,2,,5,,F
+52,Wolfgang Arnold,Wolfgang Arnold,1,1,,,F
+53,Stuttgarter Straßenbahnen AG,SSB AG,2,,2,,F
+54,Wolfgang Schuster,Wolfgang Schuster,1,1,,CDU,T
+55,Flughafen Stuttgart GmbH,Flughafen Stuttgart GmbH,2,,2,,F
+56,Stadt Stuttgart,Stadt Stuttgart,2,,9,,F
+57,Häussler Immobilien GmbH,Häussler Immobilien GmbH,2,,8,,F
+58,Heinrich Geißler,Heinrich Geißler ,1,1,,CDU,T
+59,Ernst Pfister,Ernst Pfister ,1,1,,FDP,T
+60,Tanja Gönner,Tanja Gönner,1,2,,CDU,T
+61,Thomas Bopp,Thomas Bopp,1,1,,CDU,T
+62,Johannes Bräuchle ,Johannes Bräuchle,1,1,,CDU,T
+63,Peter Conradi,Peter Conradi,1,1,,SPD,T
+64,Brigitte Dahlbender,Brigitte Dahlbender,1,2,,SPD,T
+65,Boris Palmer,Boris Palmer,1,1,,GRUENE,T
+66,Winfrid Kretschmann,Winfired Kretschmann,1,1,,GRUENE,T
+67,Hannes Rockenbauch,Hannes Rockenbauch,1,1,,SÖS,T
+68,Gangolf Stocker,Gangolf Stocker,1,1,,SÖS,T
+69,Werner Wölfle,Werner Wölfle,1,1,,GRUENE,T
+70,Peter Pätzold,Peter Pätzold,1,1,,GRUENE,T
+71,Stefan Mappus,Stefan Mappus,1,1,,CDU,T
+72,Matthias Hahn ,Matthias Hahn,1,1,,SPD,T
+74,Alexander Kaczmarek,Alexander Kaczmarek,1,1,,CDU,T
+75,Erwin Teufel,Erwin Teufel,1,1,,CDU,T
+76,Manfred Rommel,Manfred Rommel,1,1,,CDU,T
+77,Hermann Schaufler,Hermann Schaufler,1,1,,CDU,T
+78,Rezzo Schlauch,Rezzo Schlauch,1,1,,GRUENE,T
+79,Peter Ramsauer,Peter Ramsauer,1,1,,CDU,T
+80,Wolfgang Schäuble,Wolfgang Schäuble,1,1,,CDU,T
+81,Philip Rösler,Philip Rösler,1,1,,FDP,T
+82,Angela Merkel ,Angela Merkel,1,2,,CDU,T
+83,Wolfgang Drexler,Wolfgang Drexler,1,1,,SPD,T
+84,Birgit Homburger,Birgit Homburger,1,2,,FDP,T
+85,Nils Schmid,Nils Schmid,1,1,,SPD,T
+86,Wolfgang Tiefensee,Wolfgang Tiefensee,1,1,,SPD,T
+87,Matthias Wissmann ,Matthias Wissmann,1,1,,CDU,T
+88,Heinz Dürr,Heinz Dürr,1,1,,,F
+89,Bundesverband der Deutschen Industrie,BDI,2,,3,,F
+90,Ivo Gönner,Ivo Gönner,1,1,,SPD,T
+91,Stadt Ulm,Stadt Ulm,2,,9,,F
+92,Pro Stuttgart 21,Pro S21,2,,3,,F
+93,Stefan Gelbhaar,Stefan Gelbhaar,1,1,,GRUENE,T
+94,Dorothee Martin,Dorothee Martin,1,2,,SPD,T
+95,Anja Hajduk,Anja Hajduk,1,2,,GRUENE,T
+96,Martin Burkert,Martin Burkert,1,1,,SPD,T
+97,Bernd Reuther,Bernd Reuther,1,1,,FDP,T
+98,Steffen Röhlig,Steffen Röhlig,1,1,,,F
+99,Bundesministerium für Digitales und Verkehr,BMDV,2,,4,,F
+100,Bundesministerium für Wirtschaft und Klimaschutz,BMWK,2,,4,,F
+101,Eisenbahn- und Verkehrsgewerkschaft,EVG,2,,3,,F
+102,Deutsche und Europäische Normungsgremien für Bahnen,DENB,2,,5,,F
+103,"Schilling, Zutt & Anschütz Kanzlei",SZA Kanzlei,2,,,,F
+104,Stephan Harbarth,Stephan Harbarth,1,1,,CDU,T
+105,Bundesministerium für Finanzen,BaFin,2,,4,,F
+106,Fritz Kuhn,Fritz Kuhn,1,1,,GRUENE,T
+73,Stefan Garber,Stefan Garber,1,1,,,F
