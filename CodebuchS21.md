@@ -78,6 +78,8 @@ codiert von 1 bis 106, jede ID entspricht genau einem Knoten
 
 **branche** Numerisch;
 
+0 = keine Branchen-Zugehörigkeit (beta: workaround?)
+
 1 = DB-Assoziiert
 
 2 = Unternehmen der Infrastruktur
