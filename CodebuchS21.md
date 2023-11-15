@@ -78,7 +78,7 @@ codiert von 1 bis 106, jede ID entspricht genau einem Knoten
 
 **branche** Numerisch;
 
-0 = keine Branchen-Zugehörigkeit (beta: workaround?)
+0 = keine Branchen-Zugehörigkeit, da natürliche Person
 
 1 = DB-Assoziiert
 
