@@ -42,7 +42,7 @@ Ausprägung der Beziehungsstärke; hier: Auflistung der Macht zwischen zweier Kn
 
 **relationship**
 
-Definiert die Art der Beziehung bei multiplexen Netzwerken mit verschienden Beziehungsarten
+Definiert die Art der Beziehung bei multiplexen Netzwerken mit verschiedenen Beziehungsarten
 
 1 = Geschäftlich
 
