@@ -46,7 +46,7 @@ Definiert die Art der Beziehung bei multiplexen Netzwerken mit verschiedenen Bez
 
 1 = Geschäftlich
 
-2 = Freundschaftlich (nachweislich... )
+2 = mehr als Geschäftlich (nachweislich... )
 
 </div>
 
