@@ -1,0 +1,495 @@
+---
+title: "SNA_S21"
+author: "Louis Göllner"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(igraph)
+```
+
+```{r Netzwerk einlesen}
+edges <- read.csv("https://raw.githubusercontent.com/gllnxr/Stuttgart21/main/edges.csv", header=T, as.is=T, sep = ",")
+nodes <- read.csv("https://raw.githubusercontent.com/gllnxr/Stuttgart21/main/nodes.csv", header=T, as.is=T, sep = ",")
+
+# Ein Codebuch zu der Datenerhebung ist im folgenden Github-Verzeichnis zu finden.
+# https://github.com/gllnxr/Stuttgart21/blob/main/CodebuchS21.md
+
+edges$analysis_weight_strong <- edges$weight == 2
+
+edges$analysis_relationship_strong <- edges$relationship == 2
+
+  # edgematrix erstellen
+edgematrix <- as.matrix(edges)
+
+  # Teil des WorkArounds: Hinzufügen eines neuen Merkmals
+
+nodes$analysis_test <- nodes$type == 1
+
+  # igraph-Objekt erstellen
+s21 <- graph_from_data_frame(d=edgematrix, vertices=nodes, directed = F)
+
+s21
+
+  # Falls man es mal braucht: Neues Netzwerk ohne DBPSU
+without_dbpsu <- delete_vertices(s21, V(s21)[name_short == "Projekt GmbH S21"])
+```
+
+```{r Komponenten und Simplifizierung, include=FALSE}
+
+is.simple(s21)
+
+is.connected(s21)
+
+components(s21)
+```
+
+```{r Unterteilung Teilnetzwerke Frauen, Männer und Organisationen}
+
+# Frauen
+subset_nodes_females_s21 <- V(s21)[sex == 2 & analysis_test]
+females_s21 <- induced_subgraph(s21, subset_nodes_females_s21)
+
+females_s21
+
+# Männer
+subset_nodes_males_s21 <- V(s21)[sex == 1 & analysis_test]
+males_s21 <- induced_subgraph(s21, subset_nodes_males_s21)
+
+males_s21
+
+# Organisationen
+subset_nodes_type_2_s21 <- V(s21)[type == 2]
+type_2_s21 <- induced.subgraph(s21, subset_nodes_type_2_s21)
+
+type_2_s21
+```
+
+```{r Visualisierung der Teilnetzwerke, fig.height=9, fig.width=16}
+# Männer
+isolated_males_s21 <- which(degree(males_s21)==0)
+connected_males_s21 <- delete_vertices(males_s21, isolated_males_s21)
+
+# Frauen
+
+subset_nodes_females_s21 <- V(s21)[sex == 2 & analysis_test]
+females_s21 <- induced_subgraph(s21, subset_nodes_females_s21)
+
+isolated_females_s21 <- which(degree(females_s21)==0)
+connected_females_s21 <- delete_vertices(females_s21, isolated_females_s21)
+
+# Visualisierung
+
+par(mfrow=c(1,2), mar=c(2,2,2,2))
+
+plot(connected_males_s21, layout=layout_with_kk,
+     edge.arrow.size=.5,
+     edge.color="black",
+     vertex.color="lightblue",
+     vertex.frame.color=NA,
+     vertex.label.cex=.8,
+     vertex.size=6,
+     main="Verbundene Männer")
+
+plot(females_s21, layout=layout_with_kk,
+     edge.arrow.size=.5,
+     edge.color="black",
+     vertex.color="magenta",
+     vertex.frame.color=NA,
+     vertex.label.cex=.8,
+     vertex.size=6,
+     main="Frauen")
+
+# Analyse Teilnetzwerk connected_males_s21
+
+components(connected_males_s21)
+
+components(connected_males_s21)$no
+
+connected_males_comp <- decompose.graph(connected_males_s21)
+
+connected_males_comp1 <- connected_males_comp[[1]]
+connected_males_comp2 <- connected_males_comp[[2]]
+connected_males_comp3 <- connected_males_comp[[3]]
+
+density_connected_males_s21_comp1 <- edge_density(connected_males_comp1, loops = FALSE)
+# Dichte in Prozent ausgeben
+density_connected_males_s21_comp1*100
+
+density_connected_males_s21_comp2 <- edge_density(connected_males_comp2, loops = FALSE)
+# Dichte in Prozent ausgeben
+density_connected_males_s21_comp2*100
+
+density_connected_males_s21_comp3 <- edge_density(connected_males_comp3, loops = FALSE)
+# Dichte in Prozent ausgeben
+density_connected_males_s21_comp3*100
+
+```
+
+Analyse Teilnetzwerk connected_males_s21: Das Teilnetzwerk aller untereinander verbundenen Männer in s21 verfügt über `r components(connected_males_s21)$no` Komponenten, welche wiederum die Größen `r components(connected_males_s21)$csize` haben.
+
+```{r Visualisierung, echo=FALSE, fig.height=21, fig.width=33}
+  # Organisationen und Personen entsprechend kenntlich machen (two-mode-network) und nach Parteien einfärben
+V(s21)[V(s21)$party == "CDU"]$color <- "lightblue"
+V(s21)[V(s21)$party == "FDP"]$color <- "yellow"
+V(s21)[V(s21)$party == "GRUENE"]$color <- "darkgreen"
+V(s21)[V(s21)$party == "SPD"]$color <- "darkred"
+V(s21)[V(s21)$party == "SÖS"]$color <- "grey25"
+V(s21)[V(s21)$type == 1]$shape <- "circle"
+V(s21)[V(s21)$type == 2]$shape <- "square"
+  
+  # nachfolgender Befehl errechnet den degreewert aller nodes in einen neuen datensatz "degree_option", dadurch kann man im plot Befehl dann die Größe der Nodes abhängig von ihrem degreewert machen!
+degree_option <- degree(s21, mode="all")
+
+plot(s21,
+     set.seed=12,
+     asp=0,
+     layout=layout_with_kk,
+     edge.arrow.size=.3,
+     vertex.size = degree_option*0.25,
+     vertex.label.cex=1,
+     main = "Netzwerk der beteiligten Personen und Organisationen und deren Beziehungen zum Bauprojekt Stuttgart 21",
+     sub = "Die Größe der Knoten ist abhängig von ihren jeweiligen Degreewerten — Datenerhebung erfolgte durch Louis G, Sinan K, Mia M, David V, Paul A")
+```
+
+```{r Erste Untersuchungen}
+count_components(s21)
+  # Das Netzwerk s21 hat genau eine Komponente.
+
+edge_density(s21, loops = F)
+  # Das Netzwerk s21 hat eine Kantendichte von etwa 3,16%
+
+diameter(s21)
+  # Der Umfang des Netzwerks beträgt 15.
+
+farthest_vertices(s21)
+
+
+cluster_s21 <- cluster_walktrap(s21)
+
+  # Cluster-Analyse der einzelnen Cluster des Netzwerks SNA_S21 (Cluster-Walktrap-Analyse)
+plot(cluster_s21,
+     s21,
+     main = "Cluster-Walktrap Analyse des Netzwerks SNA_S21",
+     set.seed=12,
+     asp=0, 
+     layout=layout_with_kk,
+     edge.arrow.size=.3,
+     vertex.size = 2,
+     vertex.label.cex=1)
+
+list(cluster_s21)
+cluster_s21
+
+  # Degree-Berechnungen aller Edges eines Nodes (?)
+s21_degree <- degree(s21, mode = "total")
+which.max(s21_degree)
+s21_degree
+
+  # Top 10 der Degreewerte
+top10_degree_s21 <- sort(s21_degree, decreasing = T)
+top10_degree_s21
+
+  # Logischerweise hat das DBPSU den höchsten Degree-Wert. Alle sind (über verschiedene Beziehungen) mit dem Projekt verbunden.
+
+  # Betweenness-Berechnungen
+sna_betw <- betweenness(s21, directed = F, normalized = T)
+which.max(betweenness(s21))
+```
+
+```{r Erste Untersuchungen}
+# Auch hier ist das DBPSU der Node mit dem höchsten Betweenness-Wert.
+
+  # Closeness-Berechnung
+sna_close <- closeness(s21)
+which.max(closeness(s21))
+  # Auch hier ist natürlich das DBPSU der Node mit dem höchsten Closeness-Wert.
+
+  # Eigenvector-Zentralitäts-Berechnung
+s21_eigenvec <- eigen_centrality(s21)
+s21_eigenvec_new <- s21_eigenvec$vector
+which.max(s21_eigenvec_new)
+top10_eigenvec_new_s21 <- head(sort(s21_eigenvec_new, decreasing = TRUE), 10)
+top10_eigenvec_new_s21
+  # Auch hier ist das DBPSU der Node mit dem höchsten Eigenvector-Zentralitäts-Wert.
+
+  # Erstellung eines Dyaden-Zensus.
+dyad_census(s21)
+  # Es gibt 172 mutual Verbindungen im Netzwerk SNA_S21 -> ungerichtet, daher zudem die Anzahl an Edges
+
+  # Reziprozitäts-Berechnung
+reciprocity(s21, mode = "ratio")
+  # Da es sich beim Netzwerk SNA_S21 um ein ungerichtetes Netzwerk handelt kann die Reziprozität nicht verlässlich festgestellt werden. Sie beträgt hier genau 1.
+```
+
+```{r Teilnetzwerk der starken Beziehungen aka "Die Entscheidungsträger"}
+#Teilnetzwerke erstellen
+force <- subgraph.edges(s21, E(s21)[weight==2])
+force
+
+# Teilnetzwerk force analysieren
+
+#Hier ANALYSE 
+
+# Teilnetzwerk force plotten
+plot(force,
+     main = "Entscheidungsträger",
+     set.seed=12,
+     asp=0, 
+     layout=layout_with_kk,
+     edge.arrow.size=.3,
+     vertex.size = 2,
+     vertex.label.cex=0.5)
+```
+
+```{r ego herrenknecht ag}
+# Ego-Netzwerk Herrenknecht AG
+
+Herrenknecht_AG_Ego <- make_ego_graph(s21, order = 1, nodes = V(s21)$name == "Herrenknecht AG")
+
+Herrenknecht_AG_Ego1 <- Herrenknecht_AG_Ego[[1]]
+
+plot(Herrenknecht_AG_Ego1,
+     layout=layout_with_kk,
+     main="Ego-Netzwerk Knoten 18, erster Grad",
+     edge.color="grey80",
+     edge.arrow.size=.3,
+     vertex.size=5)
+
+
+```
+
+```{r broker}
+
+brokerS21 <- betweenness(s21)
+
+brokerS21
+sort(brokerS21)
+
+```
+
+```{r fig.height=9, fig.width=16}
+SchusterEgo <- make_ego_graph(s21, order = 1, nodes = V(s21)$name == "Wolfgang Schuster")
+
+SchusterEgo1 <- SchusterEgo[[1]]
+
+plot(SchusterEgo1,
+     layout=layout_with_kk,
+     main="Ego-Netzwerk Knoten 54, erster Grad",
+     edge.color="grey80",
+     edge.arrow.size=.3,
+     vertex.size=5)
+
+
+```
+
+```{r}
+# Ego-Netzwerk Herrenknecht AG
+
+TGönner <- make_ego_graph(s21, order = 1, nodes = V(s21)$name == "Tanja Gönner")
+
+TGönner1 <- TGönner[[1]]
+
+plot(TGönner1,
+     layout=layout_with_kk,
+     main="Ego-Netzwerk Knoten 60, erster Grad",
+     edge.color="grey80",
+     edge.arrow.size=.3,
+     vertex.size=5)
+```
+
+```{r Ego Netzwerk Oettinger}
+
+# Ego-Netzwerk von Günther Oettinger
+
+GOettinger <- make_ego_graph(s21, order = 2, nodes = V(s21)$name == "Günther Oettinger")
+
+GOettinger1 <- GOettinger[[1]]
+
+plot(GOettinger1,
+     layout=layout_with_kk,
+     main="Ego-Netzwerk Knoten 31, zweiten Grades",
+     edge.color="grey80",
+     edge.arrow.size=.3,
+     vertex.size=5)
+```
+
+```{r Einfärben nach Branchen}
+# Annahme: Der Graph ist s21
+# Erstelle das neue Attribut "Branche_Text" basierend auf den Werten von "Branche"
+s21$branche_vis <- NA  # Initialisiere das neue Attribut
+
+# Definiere die Bedingungen und weise den entsprechenden Text zu
+s21$branche_vis[s21$branche == 0] <- "Branche_0"
+s21$branche_vis[s21$branche == 1] <- "Branche_1"
+s21$branche_vis[s21$branche == 2] <- "Branche_2"
+s21$branche_vis[s21$branche == 3] <- "Branche_3"
+s21$branche_vis[s21$branche == 4] <- "Branche_4"
+s21$branche_vis[s21$branche == 5] <- "Branche_5"
+s21$branche_vis[s21$branche == 6] <- "Branche_6"
+s21$branche_vis[s21$branche == 7] <- "Branche_7"
+s21$branche_vis[s21$branche == 8] <- "Branche_8"
+s21$branche_vis[s21$branche == 9] <- "Branche_9"
+
+# Überprüfe den aktualisierten Datensatz
+print(s21)
+
+s21
+
+
+V(s21)[V(s21)$branche_vis == "Branche_0"]$color <- "white"
+V(s21)[V(s21)$branche_vis == "Branche_1"]$color <- "#EC0016"
+V(s21)[V(s21)$branche_vis == "Branche_2"]$color <- "#FF8800"
+V(s21)[V(s21)$branche_vis == "Branche_3"]$color <- "grey90"
+V(s21)[V(s21)$branche_vis == "Branche_4"]$color <- "navyblue"
+V(s21)[V(s21)$branche_vis == "Branche_5"]$color <- "grey70"
+V(s21)[V(s21)$branche_vis == "Branche_6"]$color <- "#E11584"
+V(s21)[V(s21)$branche_vis == "Branche_7"]$color <- "#964B00"
+V(s21)[V(s21)$branche_vis == "Branche_8"]$color <- "lightblue"
+V(s21)[V(s21)$branche_vis == "Branche_9"]$color <- "yellow"
+V(s21)[V(s21)$type == 1]$shape <- "circle"
+V(s21)[V(s21)$type == 2]$shape <- "square"
+
+label_positions <- c(1:106)
+plot(type_2_s21,
+     layout = layout_with_kk)
+# Versuch 1 mit ChatGPT, den Vertex-Fehler zu umgehen
+
+# Annahme: Du möchtest ein Teilnetzwerk mit Knoten, bei denen "sex" die Ausprägung "1" und "politician" die Ausprägung "TRUE" hat
+subset_edges <- E(s21)[(V(s21)$sex == "1") & (V(s21)$politician == TRUE)]
+subset_network <- subgraph.edges(s21, subset_edges, delete.vertices = FALSE)
+
+
+# Versuch 2
+
+# Annahme: "sex" und "politician" sind die Merkmale im Netzwerk s21
+subset_nodes_male_politicians <- V(s21)[sex == 1 & politician]
+male_politicians <- induced_subgraph(s21, subset_nodes_male_politicians)
+
+plot(male_politicians)
+```
+
+```{r Teilnetzwerk weibliche Politiker*innen}
+
+subset_nodes_female_politicians <- V(s21)[sex == 2 & politician]
+female_politicians <- induced_subgraph(s21, subset_nodes_female_politicians)
+
+plot(female_politicians)
+
+
+```
+
+```{r Vergleich beteiligte Frauen und Männer}
+# Männer
+subset_nodes_males_s21 <- V(s21)[sex == 1 & analysis_test]
+males_s21 <- induced_subgraph(s21, subset_nodes_males_s21)
+
+isolated_males_s21 <- which(degree(males_s21)==0)
+connected_males_s21 <- delete_vertices(males_s21, isolated_males_s21)
+
+
+
+
+plot(females_s21)
+# Visualisierung Vergleich
+plot(connected_males_s21)
+
+# WORKAROUND?
+# Annahme: "nodes" ist die Nodelist deines Datensatzes s21
+
+# Annahme: Die Nodelist heißt "nodes" im Datensatz "s21"
+# Füge das neue Merkmal "analysis_test" basierend auf "type" hinzu
+nodes$analysis_test <- nodes$type == 1
+# Überprüfe die aktualisierte Nodelist
+head(nodes)
+
+
+```
+
+```{r Teilnetzwerke}
+# Männer
+
+subset_nodes_males_s21 <- V(s21)[sex == 1 & analysis_test]
+males_s21 <- induced_subgraph(s21, subset_nodes_males_s21)
+
+isolated_males_s21 <- which(degree(males_s21)==0)
+connected_males_s21 <- delete_vertices(males_s21, isolated_males_s21)
+
+# Frauen
+
+subset_nodes_females_s21 <- V(s21)[sex == 2 & analysis_test]
+females_s21 <- induced_subgraph(s21, subset_nodes_females_s21)
+
+isolated_females_s21 <- which(degree(females_s21)==0)
+connected_females_s21 <- delete_vertices(females_s21, isolated_females_s21)
+
+# Visualisierung
+
+par(mfrow=c(1,2), mar=c(2,2,2,2))
+
+plot(connected_males_s21, layout=layout_with_kk,
+     edge.arrow.size=.5,
+     edge.color="lightblue",
+     vertex.color="grey75",
+     vertex.frame.color=NA,
+     vertex.label.cex=.5,
+     vertex.size=6,
+     main="Verbundene Männer")
+
+plot(females_s21, layout=layout_with_kk,
+     edge.arrow.size=.5,
+     edge.color="lightblue",
+     vertex.color="grey75",
+     vertex.frame.color=NA,
+     vertex.label.cex=.5,
+     vertex.size=6,
+     main="Frauen")
+
+# Politiker
+
+subset_nodes_politicians_s21 <- V(s21)[politician == TRUE & analysis_test]
+politicians_s21 <- induced_subgraph(s21, subset_nodes_politicians_s21)
+
+isolated_politicians_s21 <- which(degree(politicians_s21)==0)
+connected_politicians_s21 <- delete_vertices(politicians_s21, isolated_politicians_s21)
+
+V(s21)[V(s21)$party == "CDU"]$color <- "lightblue"
+V(s21)[V(s21)$party == "FDP"]$color <- "yellow"
+V(s21)[V(s21)$party == "GRUENE"]$color <- "darkgreen"
+V(s21)[V(s21)$party == "SPD"]$color <- "darkred"
+V(s21)[V(s21)$party == "SÖS"]$color <- "grey25"
+
+plot(connected_politicians_s21, layout=layout_with_kk,
+     edge.arrow.size=.5)
+```
+
+```{r Teilnetzwerke}
+
+#CDU-Politiker
+
+subset_nodes_cdu_politicians_s21 <- V(s21)[politician == TRUE & party == "CDU" & analysis_test]
+
+cdu_politicians_s21 <- induced_subgraph(s21, subset_nodes_cdu_politicians_s21) 
+
+plot(cdu_politicians_s21, layout=layout_with_kk,
+     edge.arrow.size=.5,
+     vertex.frame.color=NA,
+     vertex.label.cex=.5,
+     vertex.size=6,
+     main="CDU-Politiker*innen")
+
+```
+
+```{r weight 2 & relation 2}
+
+# Teilnetzwerk weight 2 & relation 2
+
+subset_nodes_friendly_strong_s21 <- E(s21)[weight == 2 & relationship == 2 & analysis_weight_strong & analysis_relationship_strong]
+
+friendly_strong_s21 <- subgraph.edges(s21, subset_nodes_friendly_strong_s21)
+
+plot(friendly_strong_s21)
+
+```
